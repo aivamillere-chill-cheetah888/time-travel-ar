@@ -1,26 +1,47 @@
 <!doctype html>
 <html lang="lv">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Paris Express Dining Car</title>
-<script src="https://cdn.jsdelivr.net/npm/aframe@1.4.2/dist/aframe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-<style>
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;font-family:Arial,sans-serif;touch-action:none}
-#startOverlay{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.94);color:white;text-align:center;padding:24px}
-.card{max-width:460px}
-#startBtn,#replay{border:0;border-radius:999px;padding:14px 22px;font-size:17px;font-weight:700}
-#status{position:fixed;z-index:20;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(0,0,0,.72);color:white;padding:10px 15px;border-radius:999px;font-size:14px;white-space:nowrap}
-#replay{position:fixed;z-index:20;right:14px;top:14px;display:none;background:white;color:#111;padding:10px 14px}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Paris Express — Interior Mystery</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.2/dist/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    html,body{
+      margin:0;width:100%;height:100%;overflow:hidden;background:#000;
+      font-family:Arial,sans-serif;touch-action:none
+    }
+    #startOverlay{
+      position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,.94);color:#fff;padding:24px;box-sizing:border-box;text-align:center
+    }
+    .card{max-width:460px}
+    .card h1{margin:0 0 12px;font-size:30px}
+    .card p{line-height:1.5;opacity:.9}
+    #startBtn,#replay{
+      border:0;border-radius:999px;padding:14px 22px;font-size:17px;font-weight:700;cursor:pointer
+    }
+    #status{
+      position:fixed;z-index:20;left:50%;bottom:18px;transform:translateX(-50%);
+      background:rgba(0,0,0,.72);color:#fff;padding:10px 15px;border-radius:999px;
+      font-size:14px;white-space:nowrap;pointer-events:none
+    }
+    #replay{
+      position:fixed;z-index:20;right:14px;top:14px;display:none;background:#fff;color:#111;padding:10px 14px
+    }
+  </style>
 </head>
 <body>
 
 <div id="startOverlay">
   <div class="card">
     <h1>🥂 PARIS EXPRESS · 1932</h1>
-    <p>Pavērs telefonu pret biļeti. Virs tās atvērsies grezns restorānvagons. Pakustini telefonu apkārt.</p>
+    <p>
+      Pavērs telefonu pret biļeti. Atvērsies grezns vilciena interjers.
+      Fonā skan vilciens un Parīzes mūzika. Pēc brīža — šāviens.
+    </p>
     <button id="startBtn">SĀKT CEĻOJUMU</button>
   </div>
 </div>
@@ -35,91 +56,104 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;font-f
   vr-mode-ui="enabled:false"
   device-orientation-permission-ui="enabled:false">
 
-<a-camera position="0 0 0" look-controls="enabled:false"></a-camera>
+  <a-assets>
+    <img id="interiorImg" src="train_interior.jpg">
+  </a-assets>
 
-<a-entity id="ticketTarget" mindar-image-target="targetIndex:0">
-  <a-entity id="world" position="0 0 0.055" scale="0.001 0.001 0.001">
+  <a-camera position="0 0 0" look-controls="enabled:false"></a-camera>
 
-    <a-box position="0 0 0.01" width="1.55" height="1.05" depth="0.03" color="#2c1d16"></a-box>
-    <a-box position="0 0 0.035" width="0.50" height="0.98" depth="0.02" color="#5a1720"></a-box>
+  <a-entity id="ticketTarget" mindar-image-target="targetIndex:0">
 
-    <a-box position="-0.72 0 0.28" width="0.06" height="1.04" depth="0.52" color="#44271c"></a-box>
-    <a-box position="0.72 0 0.28" width="0.06" height="1.04" depth="0.52" color="#44271c"></a-box>
-    <a-box position="-0.685 0 0.42" width="0.02" height="1.02" depth="0.025" color="#c5a05e"></a-box>
-    <a-box position="0.685 0 0.42" width="0.02" height="1.02" depth="0.025" color="#c5a05e"></a-box>
+    <!-- Main 2.5D image portal -->
+    <a-entity id="portal" position="0 0.03 0.08" scale="0.001 0.001 0.001">
+      <a-plane
+        id="interiorPlane"
+        src="#interiorImg"
+        width="1.22"
+        height="1.63"
+        position="0 0 0"
+        material="shader:flat; side:double">
+      </a-plane>
 
-    <a-entity position="-0.686 0 0.40" rotation="0 90 0">
-      <a-plane position="0 0.31 0" width="0.30" height="0.19" color="#07111d"></a-plane>
-      <a-plane position="0 0 0" width="0.30" height="0.19" color="#07111d"></a-plane>
-      <a-plane position="0 -0.31 0" width="0.30" height="0.19" color="#07111d"></a-plane>
-      <a-box id="lightL1" position="-0.20 0.31 0.012" width="0.025" height="0.14" depth="0.01" color="#e8c46a"></a-box>
-      <a-box id="lightL2" position="0.10 0 0.012" width="0.025" height="0.14" depth="0.01" color="#e8c46a"></a-box>
-      <a-box id="lightL3" position="-0.10 -0.31 0.012" width="0.025" height="0.14" depth="0.01" color="#e8c46a"></a-box>
+      <!-- subtle warm vignette frame -->
+      <a-plane
+        width="1.30"
+        height="1.72"
+        position="0 0 -0.012"
+        color="#2b160f"
+        opacity="0.92">
+      </a-plane>
+
+      <!-- soft gold title -->
+      <a-entity id="introText" position="0 0.64 0.03">
+        <a-text value="PARIS EXPRESS" align="center" color="#f0d39a" width="1.85"></a-text>
+        <a-text value="DINING CAR · 21:12" position="0 -0.09 0" align="center" color="#ffffff" width="1.25"></a-text>
+      </a-entity>
+
+      <!-- moving window-light illusion -->
+      <a-plane id="lightSweep"
+        width="0.18" height="1.45"
+        position="-0.62 0 0.025"
+        color="#ffe8a8"
+        opacity="0.12">
+      </a-plane>
+
+      <!-- dark veil + murder message -->
+      <a-plane id="darkveil"
+        visible="false"
+        width="1.30" height="1.72"
+        position="0 0 0.04"
+        color="#000000"
+        opacity="0.77">
+      </a-plane>
+
+      <a-entity id="murderCard" visible="false" position="0 0 0.055">
+        <a-text value="PARIS EXPRESS · 21:17"
+          position="0 0.30 0"
+          align="center"
+          color="#c8a66a"
+          width="1.55">
+        </a-text>
+
+        <a-text value="A GUNSHOT WAS HEARD"
+          position="0 0.08 0"
+          align="center"
+          color="#ffffff"
+          width="1.60">
+        </a-text>
+
+        <a-text value="FROM COMPARTMENT 7."
+          position="0 -0.08 0"
+          align="center"
+          color="#ffffff"
+          width="1.60">
+        </a-text>
+
+        <a-text value="A PASSENGER HAS BEEN FOUND DEAD."
+          position="0 -0.28 0"
+          align="center"
+          color="#ffffff"
+          width="1.55">
+        </a-text>
+
+        <a-text id="finalLine" value=""
+          position="0 -0.47 0"
+          align="center"
+          color="#b94a4a"
+          width="1.45">
+        </a-text>
+      </a-entity>
+
     </a-entity>
-
-    <a-entity position="0.686 0 0.40" rotation="0 -90 0">
-      <a-plane position="0 0.31 0" width="0.30" height="0.19" color="#07111d"></a-plane>
-      <a-plane position="0 0 0" width="0.30" height="0.19" color="#07111d"></a-plane>
-      <a-plane position="0 -0.31 0" width="0.30" height="0.19" color="#07111d"></a-plane>
-    </a-entity>
-
-    <a-entity position="-0.38 0.27 0.10">
-      <a-box width="0.42" height="0.26" depth="0.06" color="#f4efe5"></a-box>
-      <a-cylinder position="0 0 -0.12" radius="0.035" height="0.22" color="#5a3a28"></a-cylinder>
-      <a-cylinder position="-0.10 0 0.055" radius="0.025" height="0.05" color="#d7e5ef" opacity="0.75"></a-cylinder>
-      <a-cylinder position="0.10 0 0.055" radius="0.025" height="0.05" color="#d7e5ef" opacity="0.75"></a-cylinder>
-      <a-cylinder position="0 0 0.06" radius="0.018" height="0.08" color="#d9b15e"></a-cylinder>
-      <a-sphere position="0 0 0.115" radius="0.025" color="#ffd98a"></a-sphere>
-    </a-entity>
-
-    <a-entity position="0.38 0.00 0.10">
-      <a-box width="0.42" height="0.26" depth="0.06" color="#f4efe5"></a-box>
-      <a-cylinder position="0 0 -0.12" radius="0.035" height="0.22" color="#5a3a28"></a-cylinder>
-      <a-cylinder position="-0.10 0 0.055" radius="0.025" height="0.05" color="#d7e5ef" opacity="0.75"></a-cylinder>
-      <a-cylinder position="0.10 0 0.055" radius="0.025" height="0.05" color="#d7e5ef" opacity="0.75"></a-cylinder>
-      <a-cylinder position="0 0 0.06" radius="0.018" height="0.08" color="#d9b15e"></a-cylinder>
-      <a-sphere position="0 0 0.115" radius="0.025" color="#ffd98a"></a-sphere>
-    </a-entity>
-
-    <a-entity position="-0.38 -0.29 0.10">
-      <a-box width="0.42" height="0.26" depth="0.06" color="#f4efe5"></a-box>
-      <a-cylinder position="0 0 -0.12" radius="0.035" height="0.22" color="#5a3a28"></a-cylinder>
-      <a-cylinder position="-0.10 0 0.055" radius="0.025" height="0.05" color="#d7e5ef" opacity="0.75"></a-cylinder>
-      <a-cylinder position="0.10 0 0.055" radius="0.025" height="0.05" color="#d7e5ef" opacity="0.75"></a-cylinder>
-      <a-cylinder position="0 0 0.06" radius="0.018" height="0.08" color="#d9b15e"></a-cylinder>
-      <a-sphere position="0 0 0.115" radius="0.025" color="#ffd98a"></a-sphere>
-    </a-entity>
-
-    <a-box position="-0.58 0.27 0.12" width="0.18" height="0.34" depth="0.22" color="#6b1c26"></a-box>
-    <a-box position="-0.18 0.27 0.12" width="0.18" height="0.34" depth="0.22" color="#6b1c26"></a-box>
-    <a-box position="0.18 0 0.12" width="0.18" height="0.34" depth="0.22" color="#6b1c26"></a-box>
-    <a-box position="0.58 0 0.12" width="0.18" height="0.34" depth="0.22" color="#6b1c26"></a-box>
-    <a-box position="-0.58 -0.29 0.12" width="0.18" height="0.34" depth="0.22" color="#6b1c26"></a-box>
-    <a-box position="-0.18 -0.29 0.12" width="0.18" height="0.34" depth="0.22" color="#6b1c26"></a-box>
-
-    <a-entity id="introText" position="0 0 0.72">
-      <a-text value="PARIS EXPRESS" align="center" color="#f0d39a" width="2.4"></a-text>
-      <a-text value="DINING CAR · 21:12" position="0 -0.10 0" align="center" color="#ffffff" width="1.7"></a-text>
-    </a-entity>
-
-    <a-plane id="darkveil" visible="false" position="0 0 0.75" width="2.6" height="2.0" color="#000000" opacity="0.75"></a-plane>
-
-    <a-entity id="murderCard" visible="false" position="0 0 0.82">
-      <a-text value="PARIS EXPRESS · 21:17" position="0 0.28 0" align="center" color="#c8a66a" width="2.4"></a-text>
-      <a-text value="A GUNSHOT WAS HEARD FROM COMPARTMENT 7." position="0 0.05 0" align="center" color="#ffffff" width="2.65"></a-text>
-      <a-text value="A PASSENGER HAS BEEN FOUND DEAD." position="0 -0.18 0" align="center" color="#ffffff" width="2.75"></a-text>
-      <a-text id="finalLine" value="" position="0 -0.42 0" align="center" color="#b94a4a" width="2.35"></a-text>
-    </a-entity>
-
   </a-entity>
-</a-entity>
 </a-scene>
 
 <script>
 const sceneEl=document.querySelector('a-scene');
 const targetEl=document.querySelector('#ticketTarget');
-const world=document.querySelector('#world');
+const portal=document.querySelector('#portal');
 const introText=document.querySelector('#introText');
+const lightSweep=document.querySelector('#lightSweep');
 const darkveil=document.querySelector('#darkveil');
 const murderCard=document.querySelector('#murderCard');
 const finalLine=document.querySelector('#finalLine');
@@ -127,10 +161,10 @@ const startOverlay=document.querySelector('#startOverlay');
 const startBtn=document.querySelector('#startBtn');
 const statusEl=document.querySelector('#status');
 const replayBtn=document.querySelector('#replay');
-const lights=[document.querySelector('#lightL1'),document.querySelector('#lightL2'),document.querySelector('#lightL3')];
 
 let targetVisible=false, sequenceRunning=false, sequenceFinished=false;
-let timers=[], audioCtx=null, masterGain=null, trainBuffer=null, parisBuffer=null, trainSource=null, parisSource=null;
+let timers=[], audioCtx=null, masterGain=null;
+let trainBuffer=null, parisBuffer=null, trainSource=null, parisSource=null;
 
 function clearTimers(){timers.forEach(clearTimeout);timers=[];}
 
@@ -158,7 +192,13 @@ async function unlockAudio(){
   if(!parisBuffer) parisBuffer=await loadBuffer('paris_music.mp3',false);
 }
 
-function stopSource(s){if(s){try{s.stop()}catch(e){} try{s.disconnect()}catch(e){}}}
+function stopSource(s){
+  if(s){
+    try{s.stop()}catch(e){}
+    try{s.disconnect()}catch(e){}
+  }
+}
+
 function playLoop(buffer,gainValue){
   if(!buffer)return null;
   const src=audioCtx.createBufferSource();
@@ -166,92 +206,166 @@ function playLoop(buffer,gainValue){
   g.gain.value=gainValue;
   src.buffer=buffer;
   src.loop=true;
-  src.connect(g);g.connect(masterGain);
+  src.connect(g);
+  g.connect(masterGain);
   src.start(0);
   return src;
 }
+
 function startAmbience(){
-  stopSource(trainSource);stopSource(parisSource);
-  trainSource=playLoop(trainBuffer,.48);
-  parisSource=playLoop(parisBuffer,.58);
+  stopSource(trainSource);
+  stopSource(parisSource);
+  trainSource=playLoop(trainBuffer,.42);
+  parisSource=playLoop(parisBuffer,.60);
 }
+
 function stopAmbience(){
   stopSource(trainSource);trainSource=null;
   stopSource(parisSource);parisSource=null;
 }
+
 function gunshot(){
+  if(!audioCtx||!masterGain)return;
   const now=audioCtx.currentTime;
-  const buffer=audioCtx.createBuffer(1,Math.floor(audioCtx.sampleRate*.95),audioCtx.sampleRate);
+
+  const buffer=audioCtx.createBuffer(1,Math.floor(audioCtx.sampleRate*1.0),audioCtx.sampleRate);
   const data=buffer.getChannelData(0);
-  for(let i=0;i<data.length;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,5);
-  const noise=audioCtx.createBufferSource();noise.buffer=buffer;
-  const lp=audioCtx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2600;
-  const ng=audioCtx.createGain();ng.gain.setValueAtTime(1.7,now);ng.gain.exponentialRampToValueAtTime(.001,now+.7);
-  noise.connect(lp);lp.connect(ng);ng.connect(masterGain);noise.start(now);
+  for(let i=0;i<data.length;i++){
+    data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,5);
+  }
 
-  const boom=audioCtx.createOscillator();const bg=audioCtx.createGain();
-  boom.type='sine';boom.frequency.setValueAtTime(125,now);boom.frequency.exponentialRampToValueAtTime(34,now+.8);
-  bg.gain.setValueAtTime(1.35,now);bg.gain.exponentialRampToValueAtTime(.001,now+.95);
-  boom.connect(bg);bg.connect(masterGain);boom.start(now);boom.stop(now+1);
+  const noise=audioCtx.createBufferSource();
+  noise.buffer=buffer;
 
-  const echo=audioCtx.createOscillator();const eg=audioCtx.createGain();
-  echo.type='triangle';echo.frequency.setValueAtTime(72,now+.18);echo.frequency.exponentialRampToValueAtTime(28,now+1.6);
-  eg.gain.setValueAtTime(.55,now+.18);eg.gain.exponentialRampToValueAtTime(.001,now+1.7);
-  echo.connect(eg);eg.connect(masterGain);echo.start(now+.18);echo.stop(now+1.75);
+  const lp=audioCtx.createBiquadFilter();
+  lp.type='lowpass';
+  lp.frequency.value=2800;
+
+  const ng=audioCtx.createGain();
+  ng.gain.setValueAtTime(1.8,now);
+  ng.gain.exponentialRampToValueAtTime(0.001,now+.72);
+
+  noise.connect(lp);
+  lp.connect(ng);
+  ng.connect(masterGain);
+  noise.start(now);
+
+  const boom=audioCtx.createOscillator();
+  const bg=audioCtx.createGain();
+  boom.type='sine';
+  boom.frequency.setValueAtTime(135,now);
+  boom.frequency.exponentialRampToValueAtTime(30,now+.85);
+  bg.gain.setValueAtTime(1.45,now);
+  bg.gain.exponentialRampToValueAtTime(.001,now+1.05);
+  boom.connect(bg);
+  bg.connect(masterGain);
+  boom.start(now);
+  boom.stop(now+1.1);
 }
-function animateLights(){
-  lights.forEach((el,idx)=>{
-    const y=idx===0?'0.31':idx===1?'0':'-0.31';
-    el.setAttribute('animation',{property:'position',from:'-0.20 '+y+' 0.012',to:'0.20 '+y+' 0.012',dur:700+idx*180,loop:true,dir:'alternate',easing:'linear'});
-  });
-}
+
 function resetScene(){
-  clearTimers();stopAmbience();
-  world.setAttribute('scale','0.001 0.001 0.001');
-  world.removeAttribute('animation');
+  clearTimers();
+  stopAmbience();
+
+  portal.setAttribute('scale','0.001 0.001 0.001');
+  portal.removeAttribute('animation__open');
+
   introText.setAttribute('visible',true);
   darkveil.setAttribute('visible',false);
   murderCard.setAttribute('visible',false);
   finalLine.setAttribute('value','');
-  sequenceRunning=false;sequenceFinished=false;
+
+  sequenceRunning=false;
+  sequenceFinished=false;
 }
+
 function runSequence(){
   if(!targetVisible||sequenceRunning||sequenceFinished)return;
+
   sequenceRunning=true;
   statusEl.textContent='Restorānvagons atveras…';
 
-  world.setAttribute('animation',{property:'scale',from:'0.001 0.001 0.001',to:'1.65 1.65 1.65',dur:1000,easing:'easeOutBack'});
-  animateLights();
+  portal.setAttribute('animation__open',{
+    property:'scale',
+    from:'0.001 0.001 0.001',
+    to:'1.35 1.35 1.35',
+    dur:950,
+    easing:'easeOutBack'
+  });
+
+  lightSweep.setAttribute('animation',{
+    property:'position',
+    from:'-0.62 0 0.025',
+    to:'0.62 0 0.025',
+    dur:1400,
+    loop:true,
+    easing:'linear'
+  });
+
   startAmbience();
 
-  timers.push(setTimeout(()=>introText.setAttribute('visible',false),4500));
   timers.push(setTimeout(()=>{
-    stopSource(parisSource);parisSource=null;
+    introText.setAttribute('visible',false);
+  },4200));
+
+  timers.push(setTimeout(()=>{
+    stopSource(parisSource);
+    parisSource=null;
     gunshot();
     statusEl.textContent='...';
   },12000));
+
   timers.push(setTimeout(()=>{
     darkveil.setAttribute('visible',true);
     murderCard.setAttribute('visible',true);
   },13500));
-  timers.push(setTimeout(()=>finalLine.setAttribute('value','YOUR JOURNEY HAS CHANGED.'),15500));
+
   timers.push(setTimeout(()=>{
-    stopSource(trainSource);trainSource=null;
+    finalLine.setAttribute('value','YOUR JOURNEY HAS CHANGED.');
+  },15400));
+
+  timers.push(setTimeout(()=>{
+    stopSource(trainSource);
+    trainSource=null;
     statusEl.textContent='Compartment No. 7';
-    sequenceRunning=false;sequenceFinished=true;replayBtn.style.display='block';
-  },17500));
+    sequenceRunning=false;
+    sequenceFinished=true;
+    replayBtn.style.display='block';
+  },17400));
 }
 
 startBtn.addEventListener('click',async()=>{
-  try{await unlockAudio()}catch(e){alert('Neizdevās ielādēt train_paris.mp3.');return;}
+  try{
+    await unlockAudio();
+  }catch(e){
+    alert('Neizdevās ielādēt train_paris.mp3.');
+    return;
+  }
+
   startOverlay.style.display='none';
   const arSystem=sceneEl.systems['mindar-image-system'];
-  if(arSystem)arSystem.start();
+  if(arSystem) arSystem.start();
   statusEl.textContent='Meklēju biļeti…';
 });
-targetEl.addEventListener('targetFound',()=>{targetVisible=true;statusEl.textContent='Biļete atrasta ✨';runSequence();});
-targetEl.addEventListener('targetLost',()=>{targetVisible=false;stopAmbience();statusEl.textContent='Pavērs kameru atpakaļ pret biļeti';});
-replayBtn.addEventListener('click',async()=>{try{await unlockAudio()}catch(e){} replayBtn.style.display='none';resetScene();if(targetVisible)runSequence();});
+
+targetEl.addEventListener('targetFound',()=>{
+  targetVisible=true;
+  statusEl.textContent='Biļete atrasta ✨';
+  runSequence();
+});
+
+targetEl.addEventListener('targetLost',()=>{
+  targetVisible=false;
+  stopAmbience();
+  statusEl.textContent='Pavērs kameru atpakaļ pret biļeti';
+});
+
+replayBtn.addEventListener('click',async()=>{
+  try{await unlockAudio()}catch(e){}
+  replayBtn.style.display='none';
+  resetScene();
+  if(targetVisible) runSequence();
+});
 </script>
 </body>
 </html>
