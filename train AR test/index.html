@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="lv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AR Ticket — Train Forward</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.2/dist/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;font-family:Arial,sans-serif;touch-action:none}
+    #startOverlay{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.92);color:#fff;padding:24px;text-align:center}
+    .card{max-width:440px}
+    #startBtn,#replay{border:0;border-radius:999px;padding:14px 22px;font-size:17px;font-weight:700}
+    #status{position:fixed;z-index:20;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(0,0,0,.72);color:#fff;padding:10px 15px;border-radius:999px;font-size:14px;white-space:nowrap}
+    #replay{position:fixed;z-index:20;right:14px;top:14px;display:none;padding:10px 14px;background:#fff;color:#111}
+  </style>
+</head>
+<body>
+
+<div id="startOverlay">
+  <div class="card">
+    <h1>🎟️ RIGA → PARIS · 1932</h1>
+    <p>Pavērs telefonu pret biļeti. Vilciens brauks uz priekšu pa sliedēm, un skanēs tavs īstais vilciena ieraksts.</p>
+    <button id="startBtn">SĀKT CEĻOJUMU</button>
+  </div>
+</div>
+
+<div id="status">Pavērs kameru pret biļeti</div>
+<button id="replay">↻ Atkārtot</button>
+
+<a-scene
+  mindar-image="imageTargetSrc: bilete.mind; autoStart:false; filterMinCF:0.0001; filterBeta:0.001;"
+  color-space="sRGB"
+  renderer="colorManagement:true; physicallyCorrectLights:true"
+  vr-mode-ui="enabled:false"
+  device-orientation-permission-ui="enabled:false">
+
+  <a-camera position="0 0 0" look-controls="enabled:false"></a-camera>
+
+  <a-entity id="ticketTarget" mindar-image-target="targetIndex:0">
+    <a-entity id="world" position="0 0 0.055" rotation="0 0 0" scale="1.8 1.8 1.8">
+
+      <!-- Tracks run away from the viewer: bottom/front -> top/back -->
+      <a-entity id="tracks" visible="false" scale="0.001 0.001 0.001">
+        <a-box position="-0.11 0 0" width="0.035" height="2.20" depth="0.035" color="#3b2b20"></a-box>
+        <a-box position="0.11 0 0" width="0.035" height="2.20" depth="0.035" color="#3b2b20"></a-box>
+
+        <a-box position="0 -0.95 0.008" width="0.34" height="0.035" depth="0.025" color="#6a4a32"></a-box>
+        <a-box position="0 -0.70 0.008" width="0.34" height="0.035" depth="0.025" color="#6a4a32"></a-box>
+        <a-box position="0 -0.45 0.008" width="0.34" height="0.035" depth="0.025" color="#6a4a32"></a-box>
+        <a-box position="0 -0.20 0.008" width="0.34" height="0.035" depth="0.025" color="#6a4a32"></a-box>
+        <a-box position="0 0.05 0.008" width="0.34" height="0.035" depth="0.025" color="#6a4a32"></a-box>
+        <a-box position="0 0.30 0.008" width="0.34" height="0.035" depth="0.025" color="#6a4a32"></a-box>
+        <a-box position="0 0.55 0.008" width="0.34" height="0.035" depth="0.025" color="#6a4a32"></a-box>
+        <a-box position="0 0.80 0.008" width="0.34" height="0.035" depth="0.025" color="#6a4a32"></a-box>
+        <a-box position="0 1.05 0.008" width="0.34" height="0.035" depth="0.025" color="#6a4a32"></a-box>
+      </a-entity>
+
+      <!-- Longer train, facing toward +Y -->
+      <a-entity id="train" visible="false" position="0 -1.20 0.14" rotation="0 0 90" scale="1.3 1.3 1.3">
+        <!-- locomotive -->
+        <a-box position="0 0 0.12" width="0.62" height="0.26" depth="0.25" color="#173f31"></a-box>
+        <a-cylinder position="-0.16 0 0.23" radius="0.105" height="0.40" rotation="0 0 90" color="#245946"></a-cylinder>
+        <a-box position="0.17 0 0.31" width="0.25" height="0.23" depth="0.24" color="#173f31"></a-box>
+        <a-box position="0 0 0.255" width="0.60" height="0.02" depth="0.27" color="#c6a35b"></a-box>
+        <a-cylinder position="-0.28 0 0.39" radius="0.04" height="0.18" color="#171717"></a-cylinder>
+        <a-cylinder position="-0.28 0 0.49" radius="0.065" height="0.03" color="#171717"></a-cylinder>
+
+        <!-- carriages -->
+        <a-box position="0.66 0 0.20" width="0.48" height="0.34" depth="0.26" color="#6d1d23"></a-box>
+        <a-box position="1.17 0 0.20" width="0.48" height="0.34" depth="0.26" color="#5e1920"></a-box>
+        <a-box position="1.68 0 0.20" width="0.48" height="0.34" depth="0.26" color="#4f161c"></a-box>
+        <a-box position="2.19 0 0.20" width="0.48" height="0.34" depth="0.26" color="#461319"></a-box>
+        <a-box position="2.70 0 0.20" width="0.48" height="0.34" depth="0.26" color="#3d1116"></a-box>
+
+        <a-box position="0.66 0 0.39" width="0.50" height="0.035" depth="0.28" color="#c6a35b"></a-box>
+        <a-box position="1.17 0 0.39" width="0.50" height="0.035" depth="0.28" color="#c6a35b"></a-box>
+        <a-box position="1.68 0 0.39" width="0.50" height="0.035" depth="0.28" color="#c6a35b"></a-box>
+        <a-box position="2.19 0 0.39" width="0.50" height="0.035" depth="0.28" color="#c6a35b"></a-box>
+        <a-box position="2.70 0 0.39" width="0.50" height="0.035" depth="0.28" color="#c6a35b"></a-box>
+      </a-entity>
+
+      <a-entity id="introText" visible="false" position="0 0 0.68">
+        <a-text value="ORIENT EXPRESS" align="center" color="#f0d39a" width="3.0"></a-text>
+        <a-text value="RIGA  →  PARIS     19:40" position="0 -0.12 0" align="center" color="#ffffff" width="2.2"></a-text>
+      </a-entity>
+
+    </a-entity>
+  </a-entity>
+</a-scene>
+
+<script>
+const sceneEl=document.querySelector('a-scene');
+const targetEl=document.querySelector('#ticketTarget');
+const tracks=document.querySelector('#tracks');
+const train=document.querySelector('#train');
+const introText=document.querySelector('#introText');
+const startOverlay=document.querySelector('#startOverlay');
+const startBtn=document.querySelector('#startBtn');
+const statusEl=document.querySelector('#status');
+const replayBtn=document.querySelector('#replay');
+
+let targetVisible=false, sequenceRunning=false, sequenceFinished=false;
+let timers=[], audioCtx=null, masterGain=null, trainBuffer=null, trainSource=null;
+
+function clearTimers(){timers.forEach(clearTimeout);timers=[];}
+
+async function unlockAudio(){
+  if(!audioCtx){
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    masterGain=audioCtx.createGain();
+    masterGain.gain.value=0.95;
+    masterGain.connect(audioCtx.destination);
+  }
+  if(audioCtx.state==='suspended') await audioCtx.resume();
+
+  if(!trainBuffer){
+    statusEl.textContent='Ielādēju vilciena skaņu…';
+    const response=await fetch('train.mp3');
+    if(!response.ok) throw new Error('train.mp3 nav atrasts');
+    const arrayBuffer=await response.arrayBuffer();
+    trainBuffer=await audioCtx.decodeAudioData(arrayBuffer);
+  }
+}
+
+function stopTrainAudio(){
+  if(trainSource){
+    try{trainSource.stop();}catch(e){}
+    try{trainSource.disconnect();}catch(e){}
+    trainSource=null;
+  }
+}
+
+function playTrainAudio(){
+  if(!audioCtx||!masterGain||!trainBuffer)return;
+  stopTrainAudio();
+  trainSource=audioCtx.createBufferSource();
+  trainSource.buffer=trainBuffer;
+  trainSource.connect(masterGain);
+  trainSource.start(0);
+}
+
+function resetScene(){
+  clearTimers();
+  stopTrainAudio();
+
+  tracks.setAttribute('visible',false);
+  tracks.setAttribute('scale','0.001 0.001 0.001');
+  tracks.removeAttribute('animation');
+
+  train.setAttribute('visible',false);
+  train.setAttribute('position','0 -1.20 0.14');
+  train.removeAttribute('animation');
+
+  introText.setAttribute('visible',false);
+
+  sequenceRunning=false;
+  sequenceFinished=false;
+}
+
+function runSequence(){
+  if(!targetVisible||sequenceRunning||sequenceFinished)return;
+  sequenceRunning=true;
+  statusEl.textContent='Ceļojums sākas…';
+
+  tracks.setAttribute('visible',true);
+  tracks.setAttribute('animation',{
+    property:'scale',
+    from:'0.001 0.001 0.001',
+    to:'1 1 1',
+    dur:900,
+    easing:'easeOutBack'
+  });
+
+  timers.push(setTimeout(()=>{
+    introText.setAttribute('visible',true);
+  },500));
+
+  timers.push(setTimeout(()=>{
+    train.setAttribute('visible',true);
+    playTrainAudio();
+
+    train.setAttribute('animation',{
+      property:'position',
+      from:'0 -1.20 0.14',
+      to:'0 1.25 0.14',
+      dur:22000,
+      easing:'linear'
+    });
+  },1200));
+
+  timers.push(setTimeout(()=>{
+    introText.setAttribute('visible',false);
+  },4200));
+
+  timers.push(setTimeout(()=>{
+    stopTrainAudio();
+    train.setAttribute('visible',false);
+    tracks.setAttribute('visible',false);
+    statusEl.textContent='Ceļojums turpinās…';
+    sequenceRunning=false;
+    sequenceFinished=true;
+    replayBtn.style.display='block';
+  },23200));
+}
+
+startBtn.addEventListener('click',async()=>{
+  try{
+    await unlockAudio();
+  }catch(e){
+    alert('Neizdevās ielādēt train.mp3. Pārbaudi, vai tas ir tajā pašā mapē kā index.html.');
+    return;
+  }
+
+  startOverlay.style.display='none';
+  const arSystem=sceneEl.systems['mindar-image-system'];
+  if(arSystem)arSystem.start();
+  statusEl.textContent='Meklēju biļeti…';
+});
+
+targetEl.addEventListener('targetFound',()=>{
+  targetVisible=true;
+  statusEl.textContent='Biļete atrasta ✨';
+  runSequence();
+});
+
+targetEl.addEventListener('targetLost',()=>{
+  targetVisible=false;
+  stopTrainAudio();
+  statusEl.textContent='Pavērs kameru atpakaļ pret biļeti';
+});
+
+replayBtn.addEventListener('click',async()=>{
+  try{await unlockAudio();}catch(e){}
+  replayBtn.style.display='none';
+  resetScene();
+  if(targetVisible)runSequence();
+});
+</script>
+</body>
+</html>
